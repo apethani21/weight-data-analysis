@@ -1,7 +1,7 @@
 import os
 import json
-from gspread import Client
 from authlib.integrations.requests_client import AssertionSession
+
 
 def get_credentials():
     home = os.path.expanduser("~")
@@ -9,6 +9,7 @@ def get_credentials():
     with open(f"{home}/keys/google/{cred_file}", "r") as f:
         credentials = json.load(f)
     return credentials
+
 
 def create_assertion_session(scopes):
     credentials = get_credentials()

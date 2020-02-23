@@ -1,7 +1,6 @@
 import os
 import logging
 import sqlite3
-import pandas as pd
 from gspread import Client
 from api_handler import create_assertion_session
 
@@ -15,6 +14,7 @@ col_name_mapper = {
     "Loss (KG)": "loss"
 }
 
+
 def get_db_rows_count():
     home = os.path.expanduser('~')
     db = f"{home}/db/weight-data.db"
@@ -25,10 +25,11 @@ def get_db_rows_count():
         cur.execute(query)
     return cur.fetchone()[0]
 
+
 def get_new_weight_data():
     scopes = [
-    'https://spreadsheets.google.com/feeds',
-    'https://www.googleapis.com/auth/drive',
+        'https://spreadsheets.google.com/feeds',
+        'https://www.googleapis.com/auth/drive',
     ]
     number_of_rows = get_db_rows_count()
     session = create_assertion_session(scopes)
@@ -46,6 +47,7 @@ def get_new_weight_data():
             new_rows.append(tuple(new_row))
             row_count += 1
 
+
 def update_db():
     new_rows = get_new_weight_data()
     home = os.path.expanduser('~')
@@ -58,4 +60,6 @@ def update_db():
         cur.executemany(query, new_rows)
     logging.info(f"Successfully updated db.")
 
-update_db()
+
+if __name__ == "__main__":
+    update_db()

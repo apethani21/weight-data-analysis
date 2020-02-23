@@ -15,15 +15,17 @@ col_name_mapper = {
     "Loss (KG)": "loss"
 }
 
+
 def get_all_weight_data():
     scopes = [
-    'https://spreadsheets.google.com/feeds',
-    'https://www.googleapis.com/auth/drive',
+        'https://spreadsheets.google.com/feeds',
+        'https://www.googleapis.com/auth/drive',
     ]
     session = create_assertion_session(scopes)
     gc = Client(None, session)
     weight_track_spreadsheet = gc.open("weight-track").sheet1
     return weight_track_spreadsheet.get_all_records()
+
 
 def upload_all():
     data = get_all_weight_data()
@@ -37,6 +39,7 @@ def upload_all():
         logging.info("Writing data to database")
         df.to_sql('WEIGHT', conn, if_exists="replace", index=False)
     logging.info(f"Migration completed successfully. {len(df)} rows.")
+
 
 if __name__ == "__main__":
     upload_all()
