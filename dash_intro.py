@@ -83,7 +83,5 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     )
 ])
 
-print([df['timestamp'].values[0], df['timestamp'].values[-1]])
-print([df['loss'].values[-1], df['loss'].values[-1]])
 logging.info(f"Starting server..")
 app.run_server(debug=True)
