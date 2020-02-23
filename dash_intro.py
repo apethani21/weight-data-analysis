@@ -53,19 +53,37 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         id='Weight loss',
         figure={
             'data': [
-                {'x': df['timestamp'], 'y': df['loss'], 'type': 'scatter', 'name': 'Weight loss'},
+                {'x': df['timestamp'],
+                 'y': df['loss'],
+                 'type': 'scatter',
+                 'name': 'Loss (KG)',
+                 'mode': 'lines+markers',
+                 'marker': {'color': '#66B3FF'}},
+                {'x': df['timestamp'],
+                 'y': df['7-pt-MA'].round(2),
+                 'type': 'scatter',
+                 'name': '7-point MA',
+                 'marker': {'color': '#FF447A'}},
+                 {'x': df['timestamp'],
+                  'y': [df['loss'].values[-1] for _ in range(len(df))],
+                  'type': 'scatter',
+                  'mode': 'line',
+                  'name': 'current',
+                  'marker': {'color': '#FFFF95'}}
             ],
             'layout': {
                 'plot_bgcolor': colors['background'],
                 'paper_bgcolor': colors['background'],
                 'font': {
                     'color': colors['text']
-                }
+                },
+                'showlegend': True
             }
         }
     )
 ])
 
-
+print([df['timestamp'].values[0], df['timestamp'].values[-1]])
+print([df['loss'].values[-1], df['loss'].values[-1]])
 logging.info(f"Starting server..")
 app.run_server(debug=True)
