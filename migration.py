@@ -30,6 +30,7 @@ def upload_all():
     logging.info("Data downloaded from sheet")
     df = pd.DataFrame(data)
     df.rename(columns=col_name_mapper, inplace=True)
+    df = df[list(col_name_mapper.values())]
     home = os.path.expanduser('~')
     db = f"{home}/db/weight-data.db"
     with sqlite3.connect(db) as conn:
