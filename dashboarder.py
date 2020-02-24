@@ -10,10 +10,7 @@ import dash_html_components as html
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, 
-                external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
 server = app.server
 
 def read_all_weight_data():
@@ -41,7 +38,7 @@ loss_chart_data = [
      'type': 'scatter',
      'name': 'Loss (KG)',
      'mode': 'lines+markers',
-     'marker': {'color': '#66B3FF'}},
+     'marker': {'color': '#66B3FF', 'size': 6}},
     {'x': df['timestamp'],
      'y': df['7-pt-MA'].round(2),
      'type': 'scatter',
@@ -56,8 +53,8 @@ loss_chart_data = [
 ]
 
 loss_chart_layout = {
-    'plot_bgcolor': '#111111',
-    'paper_bgcolor': '#111111',
+    'plot_bgcolor': '#000000',
+    'paper_bgcolor': '#000000',
     'font': {'color': '#7FDBFF'},
     'showlegend': True
  }
@@ -71,14 +68,14 @@ timing_chart_data = [
 ]
 
 timing_chart_layout = {
-    'plot_bgcolor': '#111111',
-    'paper_bgcolor': '#111111',
+    'plot_bgcolor': '#000000',
+    'paper_bgcolor': '#000000',
     'font': {'color': '#7FDBFF'},
     'showlegend': True
 }
 
 
-app.layout = html.Div([
+app.layout = html.Div(style={'backgroundColor':'black'}, children=[
     html.Div([
         html.Div([
             html.H3(f'Total weighings = {len(df)}'),
