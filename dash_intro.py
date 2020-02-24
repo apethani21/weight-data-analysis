@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
 app = dash.Dash(__name__, 
                 external_stylesheets=external_stylesheets)
 server = app.server
@@ -34,7 +35,7 @@ logging.info(f"Reading data from database")
 df = process_weight_data(read_all_weight_data())
 logging.info(f"Data obtained. Rows: {len(df)}")
 
-main_chart_data = [
+loss_chart_data = [
     {'x': df['timestamp'],
      'y': df['loss'],
      'type': 'scatter',
@@ -54,29 +55,53 @@ main_chart_data = [
       'marker': {'color': '#FFFF95'}}
 ]
 
-main_chart_layout = {
-                'plot_bgcolor': '#111111',
-                'paper_bgcolor': '#111111',
-                'font': {'color': '#7FDBFF'},
-                'showlegend': True
-            }
+loss_chart_layout = {
+    'plot_bgcolor': '#111111',
+    'paper_bgcolor': '#111111',
+    'font': {'color': '#7FDBFF'},
+    'showlegend': True
+ }
 
-app.layout = html.Div(style={'backgroundColor': '#111111'}, children=[
-    html.H1(
-        children='Weight data analysis',
-        style={
-            'textAlign': 'center',
-            'color': '#7FDBFF'
-        }
-    ),
+timing_chart_data = [
+    {'x': df['timestamp'].dt.hour + df['timestamp'].dt.minute/60,
+     'type': 'histogram',
+     'name': 'Weighing time of day',
+     'marker': {'color': '#66B3FF'}
+    }
+]
 
-    dcc.Graph(
-        id='Weight loss',
-        figure={
-            'data': main_chart_data,
-            'layout': main_chart_layout
-        }
+timing_chart_layout = {
+    'plot_bgcolor': '#111111',
+    'paper_bgcolor': '#111111',
+    'font': {'color': '#7FDBFF'},
+    'showlegend': True
+}
+
+
+app.layout = html.Div([
+    html.Div([
+        html.Div([
+            html.H3(f'Total weighings = {len(df)}'),
+            dcc.Graph(
+                id='Weight loss',
+                figure={
+                    'data': loss_chart_data,
+                    'layout': loss_chart_layout
+                },
+            )
+        ], className="six columns"),
+
+        html.Div([
+            html.H3('Weighing time of day'),
+            dcc.Graph(
+                id='Weight time',
+                figure={
+                    'data': timing_chart_data,
+                    'layout': timing_chart_layout
+                }
     )
+        ], className="six columns"),
+    ], className="row")
 ])
 
 logging.info(f"Starting server..")
