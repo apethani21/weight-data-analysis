@@ -32,53 +32,49 @@ def process_weight_data(df):
 
 logging.info(f"Reading data from database")
 df = process_weight_data(read_all_weight_data())
-
 logging.info(f"Data obtained. Rows: {len(df)}")
 
-colors = {
-    'background': '#111111',
-    'text': '#7FDBFF'
-}
+main_chart_data = [
+    {'x': df['timestamp'],
+     'y': df['loss'],
+     'type': 'scatter',
+     'name': 'Loss (KG)',
+     'mode': 'lines+markers',
+     'marker': {'color': '#66B3FF'}},
+    {'x': df['timestamp'],
+     'y': df['7-pt-MA'].round(2),
+     'type': 'scatter',
+     'name': '7-point MA',
+     'marker': {'color': '#FF447A'}},
+     {'x': df['timestamp'],
+      'y': [df['loss'].values[-1] for _ in range(len(df))],
+      'type': 'scatter',
+      'mode': 'line',
+      'name': 'current',
+      'marker': {'color': '#FFFF95'}}
+]
 
-app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
+main_chart_layout = {
+                'plot_bgcolor': '#111111',
+                'paper_bgcolor': '#111111',
+                'font': {'color': '#7FDBFF'},
+                'showlegend': True
+            }
+
+app.layout = html.Div(style={'backgroundColor': '#111111'}, children=[
     html.H1(
         children='Weight data analysis',
         style={
             'textAlign': 'center',
-            'color': colors['text']
+            'color': '#7FDBFF'
         }
     ),
 
     dcc.Graph(
         id='Weight loss',
         figure={
-            'data': [
-                {'x': df['timestamp'],
-                 'y': df['loss'],
-                 'type': 'scatter',
-                 'name': 'Loss (KG)',
-                 'mode': 'lines+markers',
-                 'marker': {'color': '#66B3FF'}},
-                {'x': df['timestamp'],
-                 'y': df['7-pt-MA'].round(2),
-                 'type': 'scatter',
-                 'name': '7-point MA',
-                 'marker': {'color': '#FF447A'}},
-                 {'x': df['timestamp'],
-                  'y': [df['loss'].values[-1] for _ in range(len(df))],
-                  'type': 'scatter',
-                  'mode': 'line',
-                  'name': 'current',
-                  'marker': {'color': '#FFFF95'}}
-            ],
-            'layout': {
-                'plot_bgcolor': colors['background'],
-                'paper_bgcolor': colors['background'],
-                'font': {
-                    'color': colors['text']
-                },
-                'showlegend': True
-            }
+            'data': main_chart_data,
+            'layout': main_chart_layout
         }
     )
 ])
