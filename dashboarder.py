@@ -58,7 +58,7 @@ loss_chart_layout = {
     'font': {'color': '#7FDBFF'},
     'showlegend': True,
     'title': {
-        'text': f'Total weighings = {len(df)}',
+        'text': f'<b>Total weighings = {len(df)}</b>',
         'y':0.9,
         'x':0.5,
         'xanchor': 'center',
@@ -93,7 +93,7 @@ timing_chart_layout = {
     'font': {'color': '#7FDBFF'},
     'showlegend': True,
     'title': {
-        'text': 'Weighing hour of day',
+        'text': '<b>Weighing hour of day</b>',
         'y':0.9,
         'x':0.5,
         'xanchor': 'center',
