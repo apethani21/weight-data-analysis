@@ -63,12 +63,20 @@ loss_chart_layout = {
         'x':0.5,
         'xanchor': 'center',
         'yanchor': 'top'},
-    'xaxis': dict(showline=True, linecolor='#7FDBFF',
-                  showgrid=True, gridcolor='#7FDBFF',
-                  linewidth=3),
-    'yaxis': dict(showline=True, linecolor='#7FDBFF',
-                  showgrid=True, gridcolor='#7FDBFF',
-                  linewidth=3)
+    'xaxis': {
+        'showline': True,
+        'linecolor': '#7FDBFF',
+        'showgrid': True,
+        'gridcolor': '#7FDBFF',
+        'linewidth': 3
+    },
+    'yaxis': {
+        'showline': True,
+        'linecolor': '#7FDBFF',
+        'showgrid': True,
+        'gridcolor': '#7FDBFF',
+        'linewidth': 3
+    }
  }
 
 timing_chart_data = [
@@ -90,12 +98,20 @@ timing_chart_layout = {
         'x':0.5,
         'xanchor': 'center',
         'yanchor': 'top'},
-    'xaxis': dict(showline=True, linecolor='#7FDBFF',
-                  showgrid=True, gridcolor='#7FDBFF',
-                  linewidth=3),
-    'yaxis': dict(showline=True, linecolor='#7FDBFF',
-                  showgrid=True, gridcolor='#7FDBFF',
-                  linewidth=3)
+    'xaxis': {
+        'showline': True,
+        'linecolor': '#7FDBFF',
+        'showgrid': True,
+        'gridcolor': '#7FDBFF',
+        'linewidth': 3
+    },
+    'yaxis': {
+        'showline': True,
+        'linecolor': '#7FDBFF',
+        'showgrid': True,
+        'gridcolor': '#7FDBFF',
+        'linewidth': 3
+    }
 }
 
 
