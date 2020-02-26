@@ -38,7 +38,7 @@ loss_chart_data = [
      'type': 'scatter',
      'name': 'Loss (KG)',
      'mode': 'lines+markers',
-     'marker': {'color': '#66B3FF', 'size': 6}},
+     'marker': {'color': '#7FDBFF', 'size': 6}},
     {'x': df['timestamp'],
      'y': df['7-pt-MA'].round(2),
      'type': 'scatter',
@@ -49,21 +49,28 @@ loss_chart_data = [
       'type': 'scatter',
       'mode': 'line',
       'name': 'current',
-      'marker': {'color': '#FFFF95'}}
+      'marker': {'color': '#7FFFD4', 'line': {'width': 8}}}
 ]
 
 loss_chart_layout = {
     'plot_bgcolor': '#000000',
     'paper_bgcolor': '#000000',
     'font': {'color': '#7FDBFF'},
-    'showlegend': True
+    'showlegend': True,
+    'title_x': 0.5,
+    'xaxis': dict(showline=True, linecolor='#7FDBFF',
+                  showgrid=True, gridcolor='#7FDBFF',
+                  linewidth=3),
+    'yaxis': dict(showline=True, linecolor='#7FDBFF',
+                  showgrid=True, gridcolor='#7FDBFF',
+                  linewidth=3)
  }
 
 timing_chart_data = [
     {'x': df['timestamp'].dt.hour + df['timestamp'].dt.minute/60,
      'type': 'histogram',
      'name': 'Weighing time of day',
-     'marker': {'color': '#66B3FF'}
+     'marker': {'color': '#7FDBFF'}
     }
 ]
 
@@ -71,7 +78,14 @@ timing_chart_layout = {
     'plot_bgcolor': '#000000',
     'paper_bgcolor': '#000000',
     'font': {'color': '#7FDBFF'},
-    'showlegend': True
+    'showlegend': True,
+    'title_x': 0.5,
+    'xaxis': dict(showline=True, linecolor='#7FDBFF',
+                  showgrid=True, gridcolor='#7FDBFF',
+                  linewidth=3),
+    'yaxis': dict(showline=True, linecolor='#7FDBFF',
+                  showgrid=True, gridcolor='#7FDBFF',
+                  linewidth=3)
 }
 
 
