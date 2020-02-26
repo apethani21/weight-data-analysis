@@ -57,7 +57,12 @@ loss_chart_layout = {
     'paper_bgcolor': '#000000',
     'font': {'color': '#7FDBFF'},
     'showlegend': True,
-    'title_x': 0.5,
+    'title': {
+        'text': f'Total weighings = {len(df)}',
+        'y':0.9,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
     'xaxis': dict(showline=True, linecolor='#7FDBFF',
                   showgrid=True, gridcolor='#7FDBFF',
                   linewidth=3),
@@ -79,7 +84,12 @@ timing_chart_layout = {
     'paper_bgcolor': '#000000',
     'font': {'color': '#7FDBFF'},
     'showlegend': True,
-    'title_x': 0.5,
+    'title': {
+        'text': 'Weighing hour of day',
+        'y':0.9,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
     'xaxis': dict(showline=True, linecolor='#7FDBFF',
                   showgrid=True, gridcolor='#7FDBFF',
                   linewidth=3),
@@ -92,18 +102,16 @@ timing_chart_layout = {
 app.layout = html.Div(style={'backgroundColor':'black'}, children=[
     html.Div([
         html.Div([
-            html.H3(f'Total weighings = {len(df)}'),
             dcc.Graph(
                 id='Weight loss',
                 figure={
                     'data': loss_chart_data,
                     'layout': loss_chart_layout
                 },
-            )
+            ),
         ], className="six columns"),
 
         html.Div([
-            html.H3('Weighing time of day'),
             dcc.Graph(
                 id='Weight time',
                 figure={
