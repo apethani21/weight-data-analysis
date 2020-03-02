@@ -157,7 +157,7 @@ app.layout = html.Div(style={'backgroundColor':'black'}, children=[
                     'layout': timing_chart_layout
                 }
     )
-        ], className="six columns", style={"height": "25%", "width": "50%"}),
+        ], className="six columns", style={"height": "25%", "width": "50%", "margin": "auto"}),
 
         html.Div([
             dash_table.DataTable(
@@ -169,7 +169,7 @@ app.layout = html.Div(style={'backgroundColor':'black'}, children=[
                     'color': '#7FDBFF'
                 },
 )  
-        ], className="six columns", style={"height": "25%", "width": "25%"}),
+        ], className="six columns", style={"height": "25%", "width": "25%", "margin": "auto"}),
     ], className="row")
 ])
 
