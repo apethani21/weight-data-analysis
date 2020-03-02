@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 
 import dash
+import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
 
@@ -13,6 +14,7 @@ logging.basicConfig(level=logging.INFO,
 app = dash.Dash(__name__)
 server = app.server
 
+
 def read_all_weight_data():
     home = os.path.expanduser('~')
     db = f"{home}/db/weight-data.db"
@@ -21,6 +23,7 @@ def read_all_weight_data():
         df = pd.read_sql(query, conn)
     return df
 
+
 def process_weight_data(df):
     df.drop('datetime', inplace=True, axis='columns')
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
@@ -28,9 +31,28 @@ def process_weight_data(df):
     df['7-pt-MA'] = df['loss'].rolling(7).mean()
     return df
 
+
+def get_month_start_loss(df):
+    month_start_loss = (df
+                        .set_index('timestamp')
+                        .groupby(pd.Grouper(freq='MS'))
+                        .last())
+    month_start_loss = month_start_loss.reset_index()[['timestamp', 'loss']]
+    month_start_loss['Month loss'] = (month_start_loss['loss']
+                                      .diff()
+                                      .fillna(month_start_loss['loss'])
+                                      .round(2))
+    month_start_loss = month_start_loss.reset_index()[['timestamp', 'Month loss']]
+    month_start_loss['timestamp'] = month_start_loss['timestamp'].map(lambda t: t.strftime(format="%b-%y"))
+    month_start_loss.rename(columns={'timestamp': 'Month'}, inplace=True)
+    return month_start_loss
+
+
 logging.info(f"Reading data from database")
 df = process_weight_data(read_all_weight_data())
 logging.info(f"Data obtained. Rows: {len(df)}")
+month_start_loss = get_month_start_loss(df)
+print(f"month_start_loss: {month_start_loss}")
 
 loss_chart_data = [
     {'x': df['timestamp'],
@@ -44,12 +66,12 @@ loss_chart_data = [
      'type': 'scatter',
      'name': '7-point MA',
      'marker': {'color': '#FF447A'}},
-     {'x': df['timestamp'],
-      'y': [df['loss'].values[-1] for _ in range(len(df))],
-      'type': 'scatter',
-      'mode': 'line',
-      'name': 'current',
-      'marker': {'color': '#7FFFD4', 'line': {'width': 8}}}
+    {'x': df['timestamp'],
+     'y': [df['loss'].values[-1] for _ in range(len(df))],
+     'type': 'scatter',
+     'mode': 'line',
+     'name': 'current',
+     'marker': {'color': '#7FFFD4', 'line': {'width': 8}}}
 ]
 
 loss_chart_layout = {
@@ -59,8 +81,8 @@ loss_chart_layout = {
     'showlegend': True,
     'title': {
         'text': f'<b>Total weighings = {len(df)}</b>',
-        'y':0.9,
-        'x':0.5,
+        'y': 0.9,
+        'x': 0.5,
         'xanchor': 'center',
         'yanchor': 'top'},
     'xaxis': {
@@ -94,8 +116,8 @@ timing_chart_layout = {
     'showlegend': True,
     'title': {
         'text': '<b>Weighing hour of day</b>',
-        'y':0.9,
-        'x':0.5,
+        'y': 0.9,
+        'x': 0.5,
         'xanchor': 'center',
         'yanchor': 'top'},
     'xaxis': {
@@ -135,9 +157,24 @@ app.layout = html.Div(style={'backgroundColor':'black'}, children=[
                     'layout': timing_chart_layout
                 }
     )
-        ], className="six columns"),
+        ], className="six columns", style={"height": "25%", "width": "50%", "margin": "auto"}),
+
+        html.Div([
+            dash_table.DataTable(
+                data=month_start_loss.to_dict('records'),
+                columns=[{'id': c, 'name': c} for c in month_start_loss.columns],
+                style_header={'backgroundColor': '#000000'},
+                style_cell={
+                    'backgroundColor': '#000000',
+                    'color': '#7FDBFF'
+                },
+)  
+        ], className="six columns", style={"height": "25%", "width": "25%", "margin": "auto"}),
     ], className="row")
 ])
 
-logging.info(f"Starting server..")
-app.run_server(host='0.0.0.0')
+if __name__ == "__main__":
+    logging.info(f"Starting server..")
+    app.run_server(host='0.0.0.0', debug=True)
+
+    #style={"height": "25%", "width": "50%"}
