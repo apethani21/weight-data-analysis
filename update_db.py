@@ -2,7 +2,7 @@ import os
 import logging
 import sqlite3
 from gspread import Client
-from api_handler import create_assertion_session
+from api_handler import create_assertion_session, get_service_account_credentials
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -32,8 +32,9 @@ def get_new_weight_data():
         'https://www.googleapis.com/auth/drive',
     ]
     number_of_rows = get_db_rows_count()
-    session = create_assertion_session(scopes)
-    gc = Client(None, session)
+    assertion_session = create_assertion_session(scopes)
+    service_account_credentials = get_service_account_credentials(scopes)
+    gc = Client(service_account_credentials, assertion_session)
     weight_track_spreadsheet = gc.open("weight-track").sheet1
     row_count = number_of_rows + 2
     new_rows = []

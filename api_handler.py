@@ -1,6 +1,7 @@
 import os
 import json
 from authlib.integrations.requests_client import AssertionSession
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 def get_credentials():
@@ -31,3 +32,12 @@ def create_assertion_session(scopes):
             "kid": key_id
         },
     )
+
+
+def get_service_account_credentials(scopes):
+    home = os.path.expanduser("~")
+    cred_file = "weight-loss-track-2020-fbc41f7c95b2.json"
+    path_to_cred_file = f"{home}/keys/google/{cred_file}"
+    creds = (ServiceAccountCredentials
+             .from_json_keyfile_name(path_to_cred_file, scopes))
+    return creds
