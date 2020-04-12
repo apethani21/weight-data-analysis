@@ -19,7 +19,6 @@ server = app.server
 
 
 def read_all_weight_data():
-    home = os.path.expanduser('~')
     postgres_args = get_postgres_config()
     query = "SELECT * FROM WEIGHT;"
     with psycopg2.connect(**postgres_args) as conn:
