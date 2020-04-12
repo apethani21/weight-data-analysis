@@ -1,8 +1,10 @@
 import os
 import logging
-import sqlite3
+import psycopg2
 from gspread import Client
-from api_handler import create_assertion_session, get_service_account_credentials
+
+from api_handler import get_service_account_credentials
+from postgres_utils import get_postgres_config, pgquery
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -16,13 +18,10 @@ col_name_mapper = {
 
 
 def get_db_rows_count():
-    home = os.path.expanduser('~')
-    db = f"{home}/db/weight-data.db"
+    postgres_config = get_postgres_config()
     query = "SELECT COUNT(timestamp) FROM WEIGHT;"
-    with sqlite3.connect(db) as conn:
-        cur = conn.cursor()
-        logging.info(f"Getting row count from {db}")
-        cur.execute(query)
+    log_msg = "Getting row count from WEIGHT database"
+    cur = pgquery(query, log_msg)
     return cur.fetchone()[0]
 
 
@@ -32,9 +31,8 @@ def get_new_weight_data():
         'https://www.googleapis.com/auth/drive',
     ]
     number_of_rows = get_db_rows_count()
-    assertion_session = create_assertion_session(scopes)
     service_account_credentials = get_service_account_credentials(scopes)
-    gc = Client(service_account_credentials, assertion_session)
+    gc = Client(service_account_credentials)
     weight_track_spreadsheet = gc.open("weight-track").sheet1
     row_count = number_of_rows + 2
     new_rows = []
@@ -51,15 +49,10 @@ def get_new_weight_data():
 
 def update_db():
     new_rows = get_new_weight_data()
-    home = os.path.expanduser('~')
-    db = f"{home}/db/weight-data.db"
     query = "INSERT INTO WEIGHT VALUES (?, ?, ?, ?);"
-    logging.info(f"Inserting {len(new_rows)} new rows.")
-    with sqlite3.connect(db) as conn:
-        cur = conn.cursor()
-        logging.info(f"Getting row count from {db}")
-        cur.executemany(query, new_rows)
-    logging.info(f"Successfully updated db.")
+    log_msg = f"Inserting {len(new_rows)} new rows."
+    pgquery(query, log_msg, new_rows)
+    logging.info(f"Successfully updated WEIGHT database.")
 
 
 if __name__ == "__main__":
