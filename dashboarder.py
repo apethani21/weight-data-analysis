@@ -1,12 +1,15 @@
 import os
-import sqlite3
 import logging
+import psycopg2
+import configparser
 import pandas as pd
 
 import dash
 import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
+
+from postgres_utils import get_postgres_config
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -17,9 +20,9 @@ server = app.server
 
 def read_all_weight_data():
     home = os.path.expanduser('~')
-    db = f"{home}/db/weight-data.db"
-    query = "SELECT * FROM WEIGHT"
-    with sqlite3.connect(db) as conn:
+    postgres_args = get_postgres_config()
+    query = "SELECT * FROM WEIGHT;"
+    with psycopg2.connect(**postgres_args) as conn:
         df = pd.read_sql(query, conn)
     return df
 
@@ -102,10 +105,11 @@ loss_chart_layout = {
  }
 
 timing_chart_data = [
-    {'x': df['timestamp'].dt.hour + df['timestamp'].dt.minute/60,
-     'type': 'histogram',
-     'name': 'Weighing time of day',
-     'marker': {'color': '#7FDBFF'}
+    {
+        'x': df['timestamp'].dt.hour + df['timestamp'].dt.minute/60,
+        'type': 'histogram',
+        'name': 'Weighing time of day',
+        'marker': {'color': '#7FDBFF'}
     }
 ]
 
@@ -137,7 +141,7 @@ timing_chart_layout = {
 }
 
 
-app.layout = html.Div(style={'backgroundColor':'black'}, children=[
+app.layout = html.Div(style={'backgroundColor': 'black'}, children=[
     html.Div([
         html.Div([
             dcc.Graph(
@@ -156,7 +160,7 @@ app.layout = html.Div(style={'backgroundColor':'black'}, children=[
                     'data': timing_chart_data,
                     'layout': timing_chart_layout
                 }
-    )
+            )
         ], className="six columns", style={"height": "25%", "width": "50%", "margin": "auto"}),
 
         html.Div([
@@ -168,7 +172,7 @@ app.layout = html.Div(style={'backgroundColor':'black'}, children=[
                     'backgroundColor': '#000000',
                     'color': '#7FDBFF'
                 },
-)  
+            )
         ], className="six columns", style={"height": "25%", "width": "25%", "margin": "auto"}),
     ], className="row")
 ])
@@ -176,5 +180,3 @@ app.layout = html.Div(style={'backgroundColor':'black'}, children=[
 if __name__ == "__main__":
     logging.info(f"Starting server..")
     app.run_server(host='0.0.0.0', debug=True)
-
-    #style={"height": "25%", "width": "50%"}
