@@ -49,10 +49,14 @@ def get_new_weight_data():
 
 def update_db():
     new_rows = get_new_weight_data()
-    query = "INSERT INTO WEIGHT VALUES (?, ?, ?, ?);"
+    if not new_rows:
+        logging.info("No new rows to add.")
+        return
+    query = "INSERT INTO WEIGHT VALUES (%s, %s, %s, %s);"
     log_msg = f"Inserting {len(new_rows)} new rows."
     pgquery(query, log_msg, new_rows)
     logging.info(f"Successfully updated WEIGHT database.")
+    return
 
 
 if __name__ == "__main__":
