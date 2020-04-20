@@ -1,3 +1,4 @@
+#!/bin/bash
 printf "running update_db.py\n"
 /home/ubuntu/anaconda3/envs/weight-loss-dev/bin/python -u update_db.py >> /home/ubuntu/logs/weight-db-update.log 2>&1;
 printf "successfully updated database\n";
