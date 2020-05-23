@@ -54,7 +54,6 @@ logging.info(f"Reading data from database")
 df = process_weight_data(read_all_weight_data())
 logging.info(f"Data obtained. Rows: {len(df)}")
 month_start_loss = get_month_start_loss(df)
-print(f"month_start_loss: {month_start_loss}")
 
 loss_chart_data = [
     {'x': df['timestamp'],
